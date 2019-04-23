@@ -15,7 +15,6 @@ import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-
 import java.util.*; 
 
 /**
@@ -130,14 +129,12 @@ public class MemoryGameResponsive extends Application
    {
       @Override
       public void handle(ActionEvent event){ 
-         int turnCount = 0; //eventually get this from Game file
-         turnCount++;
       
-      //turn counts 1 and 2 are flipping cards over; turn counts 3 and 4 flip them back if not a match
-      //turn counts 1 and 2 happen      
-      //if they match, turn count is reset to 0 & buttons are nulled
-      //if they don't match, turn count
-         
+         int card1Row;
+         int card2Row;
+         int card1Col;
+         int card2Col;
+      
          int rowClick = -1;
          int colClick = -1;   
          
@@ -145,33 +142,57 @@ public class MemoryGameResponsive extends Application
             for(int c=0;c<2;c++){
                if(event.getSource().equals(buttons[r][c])){
                   rowClick = r;
-                  colClick = c;             
+                  colClick = c;
+                               
                }//if
             }//for
          }//for
          
-         if(turnCount <=2){
-            buttons[rowClick][colClick] = new Button("",iViews2[rowClick][colClick]);
-            gridpane.add(buttons[rowClick][colClick],colClick,rowClick);
-            
-            //here check to see if cards match
-            //if(turnCount == 2 && cards do not match)
-            //resultLabel.setText("click each card again to flip them over.")
-            //else if(turnCount == 2 && cards do match)
-            //reset turnCount to 0 (game.setTurnCount(0)??)
-            //null the buttons that match
-            
+         if(mg.getTurnCount() == 1){
+            card1Row = rowClick;
+            card1Col = colClick;
          }//if
          
-         else if(turnCount == 3 || turnCount == 4){
-         //how to click same button twice??
-         buttons[rowClick][colClick] = new Button("", iViews1[rowClick][colClick]);
-         gridpane.add(buttons[rowClick][colClick],colClick,rowClick);
-         if(turnCount==4){ //later get rid of this/make it a lot nicer (:
-         turnCount=0;
-         }//if
+         else if(mg.getTurnCount() == 2){
+            card2Row = rowClick;
+            card2Col = colClick;
          }//else if
-               
+         
+         int [] choice = new int[2];
+         choice[0] = rowClick;
+         choice[1] = colClick;
+         
+         //sends to memorygame to determine a match
+         mg.takeTurn(choice);
+         
+         if(keepTrack <=2){
+            buttons[rowClick][colClick] = new Button("",iViews2[rowClick][colClick]);
+            gridpane.add(buttons[rowClick][colClick],colClick,rowClick);
+         }//if 
+            
       }//handle  
    } //eventhandler
+   
+      
+   class checkButton implements EventHandler<ActionEvent>{
+      
+      @Override
+      public void handle(ActionEvent event){
+      
+         if(mg.getTurnCount() == 2){
+            if(mg.isMatch() == false){
+               buttons[card1Row][card1Col] = new Button("",new ImageView(new Image("file:fruitbasket.jpg")));
+               buttons[card2Row][card2Col] = new Button("",new ImageView(new Image("file:fruitbasket.jpg"))); 
+            }//if
+            
+            else if(mg.isMatch() == true){
+               buttons[card1Row][card1Col].setOnAction(null);
+               buttons[card2Row][card2Col].setOnAction(null);
+            }//else if
+         }
+      
+      }//checkbutton handle
+   }//checkbutton 
+   
+   
 }//memorygameresponsive
