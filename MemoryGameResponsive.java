@@ -30,6 +30,7 @@ public class MemoryGameResponsive extends Application
    Label headingLabel;
    Label descriptionLabel;
    Label resultLabel;
+   Button checkButton;
    private Label player1;
    private Label player2;
    MemoryGame mg;  
@@ -49,6 +50,7 @@ public class MemoryGameResponsive extends Application
    public void start(Stage stage)
    {  
       mg = new MemoryGame();
+      mg.setUp();
       makeAGrid();
           
       resultLabel= makeLabel("");
@@ -58,10 +60,20 @@ public class MemoryGameResponsive extends Application
       descriptionLabel=makeLabel("The player to find the most matching pairs wins!");
       VBox vbox3 = new VBox(10,descriptionLabel);
       VBox vbox1 = new VBox(20,resultLabel);
+      checkButton= new Button("Check");   
+       checkButton.setOnAction(new checkButtonHandler());
+
+      VBox vbox4 = new VBox(checkButton);
+      
+
       vbox1.setAlignment(Pos.CENTER);
       vbox2.setAlignment(Pos.CENTER);
       vbox3.setAlignment(Pos.CENTER);
-      VBox vbox= new VBox(20,vbox2,vbox3, gridpane, vbox1);
+      vbox4.setAlignment(Pos.CENTER);
+      
+      
+      VBox vbox= new VBox(20,vbox2,vbox3, gridpane, vbox1, vbox4);
+      
       vbox.setPadding(new Insets(50));
       Scene scene = new Scene(vbox, 1000,800);      
       // Set the stage title.
@@ -104,10 +116,10 @@ public class MemoryGameResponsive extends Application
             
             //arbitrarily adding so i can implement more stuff in handler
             if(r%2==0){ //fix later so it's more randomized??
-               iViews2[r][c] = new ImageView(new Image("file:banana.jpg"));
+               iViews2[r][c] = new ImageView(new Image("file:apple.jpeg"));
             }//if
             else{
-               iViews2[r][c] = new ImageView(new Image("file:apple.png"));
+               iViews2[r][c] = new ImageView(new Image("file:carrot.png"));
             }//else
             
             iViews2[r][c].setFitWidth(200);
@@ -148,12 +160,12 @@ public class MemoryGameResponsive extends Application
             }//for
          }//for
          
-         if(mg.getTurnCount() == 1){
+         if(mg.getTurnCnt()%2 == 0){
             card1Row = rowClick;
             card1Col = colClick;
          }//if
          
-         else if(mg.getTurnCount() == 2){
+         else if(mg.getTurnCnt()%2 == 1){
             card2Row = rowClick;
             card2Col = colClick;
          }//else if
@@ -165,21 +177,21 @@ public class MemoryGameResponsive extends Application
          //sends to memorygame to determine a match
          mg.takeTurn(choice);
          
-         if(mg.getTurnCount() <=2){
+         
             buttons[rowClick][colClick] = new Button("",iViews2[rowClick][colClick]);
             gridpane.add(buttons[rowClick][colClick],colClick,rowClick);
-         }//if 
+          
             
       }//handle  
    } //eventhandler
    
       
-   class checkButton implements EventHandler<ActionEvent>{
+   class checkButtonHandler implements EventHandler<ActionEvent>{
       
       @Override
       public void handle(ActionEvent event){
       
-         if(mg.getTurnCount() == 2){
+         if(mg.getTurnCnt()%2 == 1){
             if(mg.isMatch() == false){
                buttons[card1Row][card1Col] = new Button("",new ImageView(new Image("file:fruitbasket.jpg")));
                buttons[card2Row][card2Col] = new Button("",new ImageView(new Image("file:fruitbasket.jpg"))); 
