@@ -33,6 +33,11 @@ public class MemoryGameResponsive extends Application
    private Label player1;
    private Label player2;
    MemoryGame mg;  
+         
+   int card1Row;
+   int card2Row;
+   int card1Col;
+   int card2Col;
       
    public static void main(String[] args)
    {
@@ -130,11 +135,6 @@ public class MemoryGameResponsive extends Application
       @Override
       public void handle(ActionEvent event){ 
       
-         int card1Row;
-         int card2Row;
-         int card1Col;
-         int card2Col;
-      
          int rowClick = -1;
          int colClick = -1;   
          
@@ -165,7 +165,7 @@ public class MemoryGameResponsive extends Application
          //sends to memorygame to determine a match
          mg.takeTurn(choice);
          
-         if(keepTrack <=2){
+         if(mg.getTurnCount() <=2){
             buttons[rowClick][colClick] = new Button("",iViews2[rowClick][colClick]);
             gridpane.add(buttons[rowClick][colClick],colClick,rowClick);
          }//if 
