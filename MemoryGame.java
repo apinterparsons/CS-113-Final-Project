@@ -1,23 +1,20 @@
 class MemoryGame implements Game{
    private char[][] board;;
    private char[] symbols = {'*', '$'};
-   private char[][] secretBoard = new char[2][2];
+   private char[][] secretBoard;
    private int turnCnt = 0;
    private int[] choices = new int[4];
    private int boardSize;
    
    public void setUp(){
       boardSize = 2;
+      
       board = new char[boardSize][boardSize];
+      secretBoard = new char[boardSize][boardSize];
       
       for (int r=0; r<boardSize; r++){
          for (int c=0; c<boardSize; c++){
             board[r][c] = '#';
-         }//nested for
-      }//for
-      
-      for (int r=0; r<boardSize; r++){
-         for (int c=0; c<boardSize; c++){
             secretBoard[r][c] = symbols[c%2];
          }//nested for
       }//for
@@ -41,7 +38,7 @@ class MemoryGame implements Game{
          choices[3] = choice[1];
          
          //if they match 
-         if(secretBoard[choices[0]][choices[1]] == secretBoard[choices[2]][choices[3]]){
+         if(isMatch()){
             board[choices[2]][choices[3]] = secretBoard[choices[2]][choices[3]];
           
             printPretty();  
@@ -64,6 +61,15 @@ class MemoryGame implements Game{
             printPretty();
             
          }//nested else
+      }//else
+   }
+   
+   public boolean isMatch(){
+      if(secretBoard[choices[0]][choices[1]] == secretBoard[choices[2]][choices[3]]){
+         return(true);
+      }//if
+      else{
+         return(false);
       }//else
    }
    
