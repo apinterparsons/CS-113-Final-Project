@@ -30,6 +30,8 @@ public class MemoryGameResponsive extends Application
    Label headingLabel;
    Label descriptionLabel;
    Label resultLabel;
+   Label turnLabel;
+   Button checkButton;
    private Label player1;
    private Label player2;
    MemoryGame mg;  
@@ -38,6 +40,7 @@ public class MemoryGameResponsive extends Application
    int card2Row;
    int card1Col;
    int card2Col;
+   int size;
       
    public static void main(String[] args)
    {
@@ -49,19 +52,31 @@ public class MemoryGameResponsive extends Application
    public void start(Stage stage)
    {  
       mg = new MemoryGame();
+      mg.setUp();
       makeAGrid();
           
       resultLabel= makeLabel("");
+      turnLabel = makeLabel("");
      
       headingLabel= makeLabel("The Memory Game");
       VBox vbox2 = new VBox(30,headingLabel);
       descriptionLabel=makeLabel("The player to find the most matching pairs wins!");
       VBox vbox3 = new VBox(10,descriptionLabel);
-      VBox vbox1 = new VBox(20,resultLabel);
+      VBox vbox1 = new VBox(20,resultLabel, turnLabel);
+      checkButton= new Button("Check");   
+      checkButton.setOnAction(new checkButtonHandler());
+   
+      VBox vbox4 = new VBox(checkButton);
+      
+   
       vbox1.setAlignment(Pos.CENTER);
       vbox2.setAlignment(Pos.CENTER);
       vbox3.setAlignment(Pos.CENTER);
-      VBox vbox= new VBox(20,vbox2,vbox3, gridpane, vbox1);
+      vbox4.setAlignment(Pos.CENTER);
+      
+      
+      VBox vbox= new VBox(20,vbox2,vbox3, gridpane, vbox1, vbox4);
+      
       vbox.setPadding(new Insets(50));
       Scene scene = new Scene(vbox, 1000,800);      
       // Set the stage title.
@@ -103,21 +118,21 @@ public class MemoryGameResponsive extends Application
             
             
             //arbitrarily adding so i can implement more stuff in handler
-            if(r%2==0){ //fix later so it's more randomized??
-               iViews2[r][c] = new ImageView(new Image("file:banana.jpg"));
+            if(c==0){ 
+               iViews2[r][c] = new ImageView(new Image("file:apple.jpeg"));
             }//if
             else{
-               iViews2[r][c] = new ImageView(new Image("file:apple.png"));
+               iViews2[r][c] = new ImageView(new Image("file:carrot.png"));
             }//else
             
             iViews2[r][c].setFitWidth(200);
             iViews2[r][c].setFitHeight(200);
-            
+            //
             
          }
       }
                
-      for (int r=0; r<2; r++){ 
+      for (int r=0; r<2; r++){
          for(int c=0; c<2; c++){
             buttons[r][c]= new Button("", iViews1[r][c]);
             buttons[r][c].setOnAction(new ButtonClickHandler());
@@ -138,8 +153,8 @@ public class MemoryGameResponsive extends Application
          int rowClick = -1;
          int colClick = -1;   
          
-         for(int r=0;r<2;r++){ //later make r<2 represent a variable determined by radio buttons
-            for(int c=0;c<2;c++){
+         for(int r=0;r<size;r++){
+            for(int c=0;c<size;c++){
                if(event.getSource().equals(buttons[r][c])){
                   rowClick = r;
                   colClick = c;
@@ -148,12 +163,12 @@ public class MemoryGameResponsive extends Application
             }//for
          }//for
          
-         if(mg.getTurnCnt()%2 == 0){ //turn 0
+         if(mg.getTurnCnt()%2 == 0){
             card1Row = rowClick;
             card1Col = colClick;
          }//if
          
-         else if(mg.getTurnCnt()%2 == 1){ //turn 1
+         else if(mg.getTurnCnt()%2 == 1){
             card2Row = rowClick;
             card2Col = colClick;
          }//else if
@@ -162,14 +177,13 @@ public class MemoryGameResponsive extends Application
          choice[0] = rowClick;
          choice[1] = colClick;
          
-         
          //sends to memorygame to determine a match
          mg.takeTurn(choice);
          
          
          buttons[rowClick][colClick] = new Button("",iViews2[rowClick][colClick]);
          gridpane.add(buttons[rowClick][colClick],colClick,rowClick);
-         
+          
             
       }//handle  
    } //eventhandler
@@ -180,20 +194,63 @@ public class MemoryGameResponsive extends Application
       @Override
       public void handle(ActionEvent event){
       
-         if(mg.getTurnCnt()%2==1){
-            if(mg.isMatch() == false){
-               buttons[card1Row][card1Col] = new Button("",new ImageView(new Image("file:fruitbasket.jpg")));
-               buttons[card2Row][card2Col] = new Button("",new ImageView(new Image("file:fruitbasket.jpg"))); 
-               resultLabel.setText("That's not a match. Try again.");
-            }//if
+         
+         if(!mg.isMatch()){
+            buttons[card1Row][card1Col] = new Button("",iViews1[card1Row][card1Col]);
+            buttons[card2Row][card2Col] = new Button("",iViews1[card2Row][card2Col]); 
             
-            else if(mg.isMatch() == true){
-               buttons[card1Row][card1Col].setOnAction(null);
-               buttons[card2Row][card2Col].setOnAction(null);
-               resultLabel.setText("That's a match!");
-            }//else if
+            buttons[card1Row][card1Col].setOnAction(new ButtonClickHandler());
+            buttons[card2Row][card2Col].setOnAction(new ButtonClickHandler());           
+              
+            gridpane.add(buttons[card1Row][card1Col],card1Col,card1Row);
+            gridpane.add(buttons[card2Row][card2Col],card2Col,card2Row);
+            
+            resultLabel.setText("Not a match."); 
          }//if
+            
+         else if(mg.isMatch()){
+            buttons[card1Row][card1Col].setOnAction(null);
+            buttons[card2Row][card2Col].setOnAction(null);
+            resultLabel.setText("That's a match.");
+            
+         }//else if
+         
+         if(mg.isWinner()){
+            resultLabel.setText("You won!");
+            turnLabel.setText("");
+         }//if
+         
+         else{
+            turnLabel.setText("You have taken " + mg.getTurnCnt()/2 + " turn(s).");
+         }//else
+         
       
       }//checkbutton handle
    }//checkbutton 
+     
+      /* 
+      this is to activate the radio buttons for sizing the board
+      we will need to create an attribute of the size to implement in the other handler
+      the attribute will equal the number of rows/columns
+      
+      to get to this handler, have two radio buttons & a select button that is set on action to come here (an hbox maybe??)
+      */
+
+  class MemoryGameRadioButtons implements EventHandler<ActionEvent>
+ {
+      @Override
+      public void handle(ActionEvent event){
+         
+         if (firstBoard.isSelected())
+            size = 2;
+         
+         if (secondBoard.isSelected())
+            size = 4;
+            
+            //from here, this will go back to the GUI that'll make the board the correct size
+            //so iViews1 and 2 will then utilize the value of size determined here 
+      
+      }//radiobuttons handler
+   } //memorygameradiobuttons
+
 }//memorygameresponsive
