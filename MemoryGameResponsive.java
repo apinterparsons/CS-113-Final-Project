@@ -30,7 +30,6 @@ public class MemoryGameResponsive extends Application
    Label headingLabel;
    Label descriptionLabel;
    Label resultLabel;
-   Button checkButton;
    private Label player1;
    private Label player2;
    MemoryGame mg;  
@@ -50,7 +49,6 @@ public class MemoryGameResponsive extends Application
    public void start(Stage stage)
    {  
       mg = new MemoryGame();
-      mg.setUp();
       makeAGrid();
           
       resultLabel= makeLabel("");
@@ -60,20 +58,10 @@ public class MemoryGameResponsive extends Application
       descriptionLabel=makeLabel("The player to find the most matching pairs wins!");
       VBox vbox3 = new VBox(10,descriptionLabel);
       VBox vbox1 = new VBox(20,resultLabel);
-      checkButton= new Button("Check");   
-       checkButton.setOnAction(new checkButtonHandler());
-
-      VBox vbox4 = new VBox(checkButton);
-      
-
       vbox1.setAlignment(Pos.CENTER);
       vbox2.setAlignment(Pos.CENTER);
       vbox3.setAlignment(Pos.CENTER);
-      vbox4.setAlignment(Pos.CENTER);
-      
-      
-      VBox vbox= new VBox(20,vbox2,vbox3, gridpane, vbox1, vbox4);
-      
+      VBox vbox= new VBox(20,vbox2,vbox3, gridpane, vbox1);
       vbox.setPadding(new Insets(50));
       Scene scene = new Scene(vbox, 1000,800);      
       // Set the stage title.
@@ -116,20 +104,20 @@ public class MemoryGameResponsive extends Application
             
             //arbitrarily adding so i can implement more stuff in handler
             if(r%2==0){ //fix later so it's more randomized??
-               iViews2[r][c] = new ImageView(new Image("file:apple.jpeg"));
+               iViews2[r][c] = new ImageView(new Image("file:banana.jpg"));
             }//if
             else{
-               iViews2[r][c] = new ImageView(new Image("file:carrot.png"));
+               iViews2[r][c] = new ImageView(new Image("file:apple.png"));
             }//else
             
             iViews2[r][c].setFitWidth(200);
             iViews2[r][c].setFitHeight(200);
-            //
+            
             
          }
       }
                
-      for (int r=0; r<2; r++){
+      for (int r=0; r<2; r++){ 
          for(int c=0; c<2; c++){
             buttons[r][c]= new Button("", iViews1[r][c]);
             buttons[r][c].setOnAction(new ButtonClickHandler());
@@ -150,7 +138,7 @@ public class MemoryGameResponsive extends Application
          int rowClick = -1;
          int colClick = -1;   
          
-         for(int r=0;r<2;r++){
+         for(int r=0;r<2;r++){ //later make r<2 represent a variable determined by radio buttons
             for(int c=0;c<2;c++){
                if(event.getSource().equals(buttons[r][c])){
                   rowClick = r;
@@ -160,12 +148,12 @@ public class MemoryGameResponsive extends Application
             }//for
          }//for
          
-         if(mg.getTurnCnt()%2 == 0){
+         if(mg.getTurnCnt()%2 == 0){ //turn 0
             card1Row = rowClick;
             card1Col = colClick;
          }//if
          
-         else if(mg.getTurnCnt()%2 == 1){
+         else if(mg.getTurnCnt()%2 == 1){ //turn 1
             card2Row = rowClick;
             card2Col = colClick;
          }//else if
@@ -174,13 +162,14 @@ public class MemoryGameResponsive extends Application
          choice[0] = rowClick;
          choice[1] = colClick;
          
+         
          //sends to memorygame to determine a match
          mg.takeTurn(choice);
          
          
-            buttons[rowClick][colClick] = new Button("",iViews2[rowClick][colClick]);
-            gridpane.add(buttons[rowClick][colClick],colClick,rowClick);
-          
+         buttons[rowClick][colClick] = new Button("",iViews2[rowClick][colClick]);
+         gridpane.add(buttons[rowClick][colClick],colClick,rowClick);
+         
             
       }//handle  
    } //eventhandler
@@ -191,20 +180,20 @@ public class MemoryGameResponsive extends Application
       @Override
       public void handle(ActionEvent event){
       
-         if(mg.getTurnCnt()%2 == 1){
+         if(mg.getTurnCnt()%2==1){
             if(mg.isMatch() == false){
                buttons[card1Row][card1Col] = new Button("",new ImageView(new Image("file:fruitbasket.jpg")));
                buttons[card2Row][card2Col] = new Button("",new ImageView(new Image("file:fruitbasket.jpg"))); 
+               resultLabel.setText("That's not a match. Try again.");
             }//if
             
             else if(mg.isMatch() == true){
                buttons[card1Row][card1Col].setOnAction(null);
                buttons[card2Row][card2Col].setOnAction(null);
+               resultLabel.setText("That's a match!");
             }//else if
-         }
+         }//if
       
       }//checkbutton handle
    }//checkbutton 
-   
-   
 }//memorygameresponsive
