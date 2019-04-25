@@ -4,8 +4,8 @@ class MemoryGameDriver{
       Scanner sc = new Scanner(System.in);
    
    
-      MemoryGame mg= new MemoryGame();
-      mg.setUp();
+      MemoryGame mem= new MemoryGame();
+      mem.setUp();
 
       
       
@@ -17,8 +17,8 @@ class MemoryGameDriver{
       int[] choice_one = {row, col};
           
          
-      if(mg.isValidInput(choice_one)==true){
-         mg.takeTurn(choice_one);
+      if(mem.isValidInput(choice_one)==true){
+         mem.takeTurn(choice_one);
          
          System.out.println("For your second card; what row do you want?");
          int row_2 = sc.nextInt();
@@ -27,12 +27,12 @@ class MemoryGameDriver{
           
          int[] choice_two = {row_2, col_2};
          
-         if(mg.isValidInput(choice_two)==true){
+         if(mem.isValidInput(choice_two)==true){
            
-            mg.takeTurn(choice_two);
-            mg.isWinner();
-            System.out.println (mg.isWinner());
-            //System.out.println(mg.getSym());
+            mem.takeTurn(choice_two);
+            mem.isWinner();
+            System.out.println (mem.isWinner());
+            //System.out.println(mem.getSym());
          }
          else{ 
             System.out.println("wrong input");} 
