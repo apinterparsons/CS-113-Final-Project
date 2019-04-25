@@ -13,6 +13,8 @@ import javafx.scene.image.ImageView;
 import javafx.geometry.Pos;
 import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import java.util.*; 
@@ -24,6 +26,7 @@ public class MemoryGameResponsive extends Application
 {
    Button [][] buttons;
    GridPane gridpane= new GridPane();
+   GridPane gridpane2= new GridPane();
    Image ImageView;
    ImageView [][] iViews1; 
    ImageView [][] iViews2; 
@@ -40,7 +43,15 @@ public class MemoryGameResponsive extends Application
    int card2Row;
    int card1Col;
    int card2Col;
-   int size;
+   int size=3;
+   
+   private  ToggleGroup radioGroup; 
+
+   private RadioButton [] radioButtons = new RadioButton[3]; 
+   private RadioButton smallBoard;
+   private RadioButton medBoard;
+   private RadioButton largeBoard;
+
       
    public static void main(String[] args)
    {
@@ -67,15 +78,36 @@ public class MemoryGameResponsive extends Application
       checkButton.setOnAction(new checkButtonHandler());
    
       VBox vbox4 = new VBox(checkButton);
+       
+      radioButtons[0] = new RadioButton("2 x 2 Board Size");
+      radioButtons[1] = new RadioButton("4 x 4 Board Size");
+      radioButtons[2] = new RadioButton("6 x 6 Board Size");
       
+     // Select the milesButton control.
+      radioButtons[0].setSelected(true);
+      
+      // Add the RadioButton controls to a ToggleGroup.
+      //ToggleGroup 
+      radioGroup = new ToggleGroup();
+      for (int i=0;i<3;i++)
+         radioButtons[i].setToggleGroup(radioGroup);
+      
+      Button convertButton = new Button("Play");
+      convertButton.setOnAction(new MemoryGameRadioButtons());
+
+      VBox radioVBoxWt = new VBox(20, radioButtons[0], radioButtons[1],radioButtons[2]);
+      
+      RadioButton selectedRadioButton = (RadioButton) radioGroup.getSelectedToggle();
+      VBox playVBox = new VBox(convertButton);
    
       vbox1.setAlignment(Pos.CENTER);
       vbox2.setAlignment(Pos.CENTER);
       vbox3.setAlignment(Pos.CENTER);
       vbox4.setAlignment(Pos.CENTER);
+      radioVBoxWt.setAlignment(Pos.CENTER);
+      playVBox.setAlignment(Pos.CENTER);
       
-      
-      VBox vbox= new VBox(20,vbox2,vbox3, gridpane, vbox1, vbox4);
+      VBox vbox= new VBox(20,vbox2,vbox3, radioVBoxWt,playVBox, gridpane, vbox1, vbox4);
       
       vbox.setPadding(new Insets(50));
       Scene scene = new Scene(vbox, 1000,800);      
@@ -236,15 +268,15 @@ public class MemoryGameResponsive extends Application
       to get to this handler, have two radio buttons & a select button that is set on action to come here (an hbox maybe??)
       */
 
-  class MemoryGameRadioButtons implements EventHandler<ActionEvent>
- {
+   class MemoryGameRadioButtons implements EventHandler<ActionEvent>
+   {
       @Override
       public void handle(ActionEvent event){
          
-         if (firstBoard.isSelected())
+         if (smallBoard.isSelected())
             size = 2;
          
-         if (secondBoard.isSelected())
+         if (medBoard.isSelected())
             size = 4;
             
             //from here, this will go back to the GUI that'll make the board the correct size
