@@ -45,6 +45,12 @@ public class MemoryGameResponsive extends Application
    int card2Col;
    int size=0;
    
+   int p1count = 0;
+   int p2count = 0;
+   int keepTrack = 0;
+   int p1matches = 0;
+   int p2matches = 0;
+   
    private  ToggleGroup radioGroup; 
 
    private RadioButton [] radioButtons = new RadioButton[3]; 
@@ -148,15 +154,14 @@ public class MemoryGameResponsive extends Application
       int x=0;
       for(int r=0;r<size;r++){
          for(int c=0; c<size; c++){
-         x++;
+            x++;
             iViews1[r][c]= new ImageView(new Image("file:fruitbasket.jpg"));
             iViews1[r][c].setFitWidth(100); 
             iViews1[r][c].setFitHeight(100);
             
             iViews2[r][c]= new ImageView(new Image("file:"+x+".jpg"));
             iViews2[r][c].setFitWidth(100); 
-            iViews2[r][c].setFitHeight(100);
-            
+            iViews2[r][c].setFitHeight(100);           
             
          }
       }
@@ -221,10 +226,12 @@ public class MemoryGameResponsive extends Application
    class checkButtonHandler implements EventHandler<ActionEvent>{
       
       @Override
-      public void handle(ActionEvent event){
-      
+      public void handle(ActionEvent event){    
          
          if(!mg.isMatch()){
+            
+            keepTrack++;
+         
             buttons[card1Row][card1Col] = new Button("",iViews1[card1Row][card1Col]);
             buttons[card2Row][card2Col] = new Button("",iViews1[card2Row][card2Col]); 
             
@@ -234,8 +241,19 @@ public class MemoryGameResponsive extends Application
             gridpane.add(buttons[card1Row][card1Col],card1Col,card1Row);
             gridpane.add(buttons[card2Row][card2Col],card2Col,card2Row);
             
-            resultLabel.setText("Not a match."); 
-         }//if
+            if(keepTrack%2 == 1){ //player 1
+               p1count++;
+               turnLabel.setText("Player 1, you have taken " + p1count + " turn(s). \nPlayer 2, it's your turn.");
+            }//if
+            
+            else if(keepTrack%2 == 0){ //player 2
+               p2count++;
+               turnLabel.setText("Player 2, you have taken " + p2count + " turn(s). \nPlayer 1, it's your turn.");
+            }//else if
+            
+            resultLabel.setText("Not a match." + keepTrack);
+            
+         }//if isMatch
             
          else if(mg.isMatch()){
             buttons[card1Row][card1Col].setOnAction(null);
@@ -245,46 +263,40 @@ public class MemoryGameResponsive extends Application
          }//else if
          
          if(mg.isWinner()){
-            resultLabel.setText("You won!");
+         
+            if(p1count>p2count || p2count == 0){
+               resultLabel.setText("Player 2, you won!");
+               p2matches++;
+            }//if
+            
+            else{
+               resultLabel.setText("Player 1, you won!");
+               p1matches++;
+            }//else
             turnLabel.setText("");
          }//if
          
-         else{
-            turnLabel.setText("You have taken " + mg.getTurnCnt()/2 + " turn(s).");
-         }//else
-         
-      
       }//checkbutton handle
    }//checkbutton 
-     
-      /* 
-      this is to activate the radio buttons for sizing the board
-      we will need to create an attribute of the size to implement in the other handler
-      the attribute will equal the number of rows/columns
-      
-      to get to this handler, have two radio buttons & a select button that is set on action to come here (an hbox maybe??)
-      */
 
+ 
    class MemoryGameRadioButtons implements EventHandler<ActionEvent>
    {
       @Override
       public void handle(ActionEvent event){
          
-         if (radioButtons[0].isSelected()){
+         if(radioButtons[0].isSelected()){
             size = 2;
-            }
+         }
          
-         else if (radioButtons[1].isSelected()){
-            size = 4;}
-     
-            
-       else  if (radioButtons[2].isSelected()){
-            size = 6;}
+         else if(radioButtons[1].isSelected()){
+            size = 4;
+         }
+           
+         else if(radioButtons[2].isSelected()){
+            size = 6;
+         }
          makeAGrid();
-      
-            
-            //from here, this will go back to the GUI that'll make the board the correct size
-            //so iViews1 and 2 will then utilize the value of size determined here 
       
       }//radiobuttons handler
    } //memorygameradiobuttons
