@@ -38,12 +38,12 @@ public class MemoryGameResponsive extends Application
    private Label player1;
    private Label player2;
    MemoryGame mg;  
-         
+    
    int card1Row;
    int card2Row;
    int card1Col;
    int card2Col;
-   int size=3;
+   int size=0;
    
    private  ToggleGroup radioGroup; 
 
@@ -70,10 +70,10 @@ public class MemoryGameResponsive extends Application
       turnLabel = makeLabel("");
      
       headingLabel= makeLabel("The Memory Game");
-      VBox vbox2 = new VBox(30,headingLabel);
+      VBox vbox2 = new VBox(headingLabel);
       descriptionLabel=makeLabel("The player to find the most matching pairs wins!");
-      VBox vbox3 = new VBox(10,descriptionLabel);
-      VBox vbox1 = new VBox(20,resultLabel, turnLabel);
+      VBox vbox3 = new VBox(descriptionLabel);
+      VBox vbox1 = new VBox(resultLabel, turnLabel);
       checkButton= new Button("Check");   
       checkButton.setOnAction(new checkButtonHandler());
    
@@ -91,11 +91,12 @@ public class MemoryGameResponsive extends Application
       radioGroup = new ToggleGroup();
       for (int i=0;i<3;i++)
          radioButtons[i].setToggleGroup(radioGroup);
+         
       
       Button convertButton = new Button("Play");
       convertButton.setOnAction(new MemoryGameRadioButtons());
-
-      VBox radioVBoxWt = new VBox(20, radioButtons[0], radioButtons[1],radioButtons[2]);
+   
+      VBox radioVBoxWt = new VBox(radioButtons[0], radioButtons[1],radioButtons[2]);
       
       RadioButton selectedRadioButton = (RadioButton) radioGroup.getSelectedToggle();
       VBox playVBox = new VBox(convertButton);
@@ -107,15 +108,17 @@ public class MemoryGameResponsive extends Application
       radioVBoxWt.setAlignment(Pos.CENTER);
       playVBox.setAlignment(Pos.CENTER);
       
-      VBox vbox= new VBox(20,vbox2,vbox3, radioVBoxWt,playVBox, gridpane, vbox1, vbox4);
+      VBox vbox= new VBox(vbox2,vbox3, radioVBoxWt,playVBox, gridpane, vbox1, vbox4);
       
-      vbox.setPadding(new Insets(50));
-      Scene scene = new Scene(vbox, 1000,800);      
+      //vbox.setPadding(new Insets(10));
+      Scene scene = new Scene(vbox, 1500,900);      
       // Set the stage title.
       stage.setTitle("Memory Game ");
       
     
       // Show the window.
+      //scene.getStylesheets().add("css1.css");
+   
       stage.setScene(scene);   
       stage.show();
    }
@@ -137,35 +140,29 @@ public class MemoryGameResponsive extends Application
       
       gridpane.setAlignment(Pos.BOTTOM_CENTER);
       
-      buttons = new Button [2][2];
-      iViews1 = new ImageView[2][2]; 
+      buttons = new Button [size][size];
+      iViews1 = new ImageView[size][size]; 
       
-      iViews2 = new ImageView[2][2];
+      iViews2 = new ImageView[size][size];
       
-      for(int r=0;r<2;r++){
-         for(int c=0; c<2; c++){
+      int x=0;
+      for(int r=0;r<size;r++){
+         for(int c=0; c<size; c++){
+         x++;
             iViews1[r][c]= new ImageView(new Image("file:fruitbasket.jpg"));
-            iViews1[r][c].setFitWidth(200); 
-            iViews1[r][c].setFitHeight(200);
+            iViews1[r][c].setFitWidth(100); 
+            iViews1[r][c].setFitHeight(100);
             
+            iViews2[r][c]= new ImageView(new Image("file:"+x+".jpg"));
+            iViews2[r][c].setFitWidth(100); 
+            iViews2[r][c].setFitHeight(100);
             
-            //arbitrarily adding so i can implement more stuff in handler
-            if(c==0){ 
-               iViews2[r][c] = new ImageView(new Image("file:apple.jpeg"));
-            }//if
-            else{
-               iViews2[r][c] = new ImageView(new Image("file:carrot.png"));
-            }//else
-            
-            iViews2[r][c].setFitWidth(200);
-            iViews2[r][c].setFitHeight(200);
-            //
             
          }
       }
                
-      for (int r=0; r<2; r++){
-         for(int c=0; c<2; c++){
+      for (int r=0; r<size; r++){
+         for(int c=0; c<size; c++){
             buttons[r][c]= new Button("", iViews1[r][c]);
             buttons[r][c].setOnAction(new ButtonClickHandler());
             gridpane.add(buttons[r][c],c,r);
@@ -273,11 +270,18 @@ public class MemoryGameResponsive extends Application
       @Override
       public void handle(ActionEvent event){
          
-         if (smallBoard.isSelected())
+         if (radioButtons[0].isSelected()){
             size = 2;
+            }
          
-         if (medBoard.isSelected())
-            size = 4;
+         else if (radioButtons[1].isSelected()){
+            size = 4;}
+     
+            
+       else  if (radioButtons[2].isSelected()){
+            size = 6;}
+         makeAGrid();
+      
             
             //from here, this will go back to the GUI that'll make the board the correct size
             //so iViews1 and 2 will then utilize the value of size determined here 
