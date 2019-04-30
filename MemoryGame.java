@@ -1,21 +1,34 @@
 class MemoryGame implements Game{
-   private char[][] board;;
-   private char[] symbols = {'*', '$'};
-   private char[][] secretBoard;
-   private int turnCnt = 0;
+   private int[][] board;
+   private int[][] secretBoard;
+   private int turnCnt = 0; 
    private int[] choices = new int[4];
    private int boardSize;
    
+   public MemoryGame(int size){
+      boardSize = size;
+      setUp();
+   }
+   
    public void setUp(){
-      boardSize = 2;
       
-      board = new char[boardSize][boardSize];
-      secretBoard = new char[boardSize][boardSize];
+      board = new int[boardSize][boardSize];
+      secretBoard = new int[boardSize][boardSize];
       
+      int[] symbols = new int[boardSize*boardSize];
+      //make the symbols
+      for(int i = 0; i<(boardSize*boardSize); i++){
+         symbols[i] = i/2;
+         System.out.println(symbols[i]);
+      }
+      
+      int i = 0;
       for (int r=0; r<boardSize; r++){
          for (int c=0; c<boardSize; c++){
-            board[r][c] = '#';
-            secretBoard[r][c] = symbols[c%2];
+            board[r][c] = 0;
+            secretBoard[r][c] = symbols[i];
+            i++;
+          
          }//nested for
       }//for
       
@@ -40,6 +53,8 @@ class MemoryGame implements Game{
          //if they match 
          if(isMatch()){
             board[choices[2]][choices[3]] = secretBoard[choices[2]][choices[3]];
+            
+            System.out.println("It's a match");
           
             printPretty();  
             turnCnt++;
@@ -57,9 +72,7 @@ class MemoryGame implements Game{
             board[choices[2]][choices[3]] = '#';
           
             turnCnt++;
-            
-            printPretty();
-            
+            printPretty();  
          }//nested else
       }//else
    }
@@ -103,8 +116,8 @@ class MemoryGame implements Game{
    }
    
    public boolean isValidInput(int [] x){
-      if(x[0]>0 && x[0]<boardSize){
-         if(x[1]>0 && x[0]<boardSize){
+      if(x[0]>=0 && x[0]<boardSize){
+         if(x[1]>=0 && x[0]<boardSize){
             return(true);
          }//nested if
          else{
@@ -115,14 +128,24 @@ class MemoryGame implements Game{
       }
    
    public void printPretty(){
-      for (int r=0; r<2; r++){
+      for (int r=0; r<boardSize; r++){
          System.out.println();
-         for (int c=0; c<2; c++){
-            System.out.print(board[r][c]); 
+         for (int c=0; c<boardSize; c++){
+            System.out.print(secretBoard[r][c]); 
          }//nested for
       }//for
       System.out.println();
    }
+   
+   public void setBoardSize(int size){
+      boardSize = size;
+   }
+   
+   public int getBoardSize(){
+      return(boardSize);
+   }
+   
+
    
 
 }// MemoryGame class
