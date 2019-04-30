@@ -19,7 +19,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import java.util.*; 
 
-/**
+/*
  *  A JavaFX: Memory Game 
  */
 public class MemoryGameResponsive extends Application
@@ -68,10 +68,11 @@ public class MemoryGameResponsive extends Application
    @Override
    public void start(Stage stage)
    {  
+  /*  
       mg = new MemoryGame();
       mg.setUp();
       makeAGrid();
-          
+    */      
       resultLabel= makeLabel("");
       turnLabel = makeLabel("");
      
@@ -251,7 +252,7 @@ public class MemoryGameResponsive extends Application
                turnLabel.setText("Player 2, you have taken " + p2count + " turn(s). \nPlayer 1, it's your turn.");
             }//else if
             
-            resultLabel.setText("Not a match." + keepTrack);
+            resultLabel.setText("Not a match.");
             
          }//if isMatch
             
@@ -266,12 +267,12 @@ public class MemoryGameResponsive extends Application
          
             if(p1count>p2count || p2count == 0){
                resultLabel.setText("Player 2, you won!");
-               p2matches++;
+               
             }//if
             
             else{
                resultLabel.setText("Player 1, you won!");
-               p1matches++;
+               
             }//else
             turnLabel.setText("");
          }//if
@@ -297,6 +298,7 @@ public class MemoryGameResponsive extends Application
             size = 6;
          }
          makeAGrid();
+        mg = new MemoryGame(size);
       
       }//radiobuttons handler
    } //memorygameradiobuttons
