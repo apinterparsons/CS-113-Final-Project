@@ -3,9 +3,11 @@ class MemoryGameDriver{
    public static void main(String argv[]){
       Scanner sc = new Scanner(System.in);
    
-   
-      MemoryGame mem= new MemoryGame();
-      mem.setUp();
+      System.out.println("Do you want to play a 2, 4, or 6 board?");
+      int answer = sc.nextInt();
+      MemoryGame mem= new MemoryGame(answer);
+      
+      
       //mem.printPrettysecretBoard();
       while (mem.isWinner()==false){ 
       
