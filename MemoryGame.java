@@ -38,6 +38,7 @@ class MemoryGame implements Game{
       printPretty();  
    } 
    
+   //This shuffle function was NOT thought of by our team; it was taken from https://www.programcreek.com/2012/02/java-method-to-shuffle-an-int-array-with-random-order/
    public void shuffle(int[] array){
       int length = array.length;
       Random rnd = new Random();

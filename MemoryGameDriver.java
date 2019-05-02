@@ -4,11 +4,8 @@ class MemoryGameDriver{
       Scanner sc = new Scanner(System.in);
    
    
-      System.out.println("What size board do you want? 2,4, or 6?");
-      int s=sc.nextInt();
-      
-      MemoryGame mem= new MemoryGame(s);
-     
+      MemoryGame mem= new MemoryGame();
+      mem.setUp();
       //mem.printPrettysecretBoard();
       while (mem.isWinner()==false){ 
       

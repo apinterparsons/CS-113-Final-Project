@@ -89,7 +89,7 @@ public class MemoryGameResponsive extends Application
       radioButtons[1] = new RadioButton("4 x 4 Board Size");
       radioButtons[2] = new RadioButton("6 x 6 Board Size");
       
-     // Select the milesButton control.
+     // Select a radiobutton to start control.
       radioButtons[0].setSelected(true);
       
       // Add the RadioButton controls to a ToggleGroup.
