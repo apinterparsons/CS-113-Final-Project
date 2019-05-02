@@ -34,10 +34,11 @@ public class MemoryGameResponsive extends Application
    Label descriptionLabel;
    Label resultLabel;
    Label turnLabel;
+   Label matchesLabel;
    Button checkButton;
-   private Label player1;
-   private Label player2;
-   MemoryGame mg;  
+   private Player player1;
+   private Player player2;
+   private MemoryGame mg; 
     
    int card1Row;
    int card2Row;
@@ -45,11 +46,7 @@ public class MemoryGameResponsive extends Application
    int card2Col;
    int size=0;
    
-   int p1count = 0;
-   int p2count = 0;
    int keepTrack = 0;
-   int p1matches = 0;
-   int p2matches = 0;
    
    private  ToggleGroup radioGroup; 
 
@@ -68,13 +65,15 @@ public class MemoryGameResponsive extends Application
    @Override
    public void start(Stage stage)
    {  
-  /*  
+   /*  
       mg = new MemoryGame();
       mg.setUp();
       makeAGrid();
     */      
       resultLabel= makeLabel("");
       turnLabel = makeLabel("");
+      matchesLabel = makeLabel("");
+      
      
       headingLabel= makeLabel("The Memory Game");
       VBox vbox2 = new VBox(headingLabel);
@@ -98,7 +97,7 @@ public class MemoryGameResponsive extends Application
       radioGroup = new ToggleGroup();
       for (int i=0;i<3;i++)
          radioButtons[i].setToggleGroup(radioGroup);
-         
+           
       
       Button convertButton = new Button("Play");
       convertButton.setOnAction(new MemoryGameRadioButtons());
@@ -107,6 +106,9 @@ public class MemoryGameResponsive extends Application
       
       RadioButton selectedRadioButton = (RadioButton) radioGroup.getSelectedToggle();
       VBox playVBox = new VBox(convertButton);
+      
+      player1 = new Player("Isabelle");
+      player2 = new Player("Dude");
    
       vbox1.setAlignment(Pos.CENTER);
       vbox2.setAlignment(Pos.CENTER);
@@ -115,7 +117,7 @@ public class MemoryGameResponsive extends Application
       radioVBoxWt.setAlignment(Pos.CENTER);
       playVBox.setAlignment(Pos.CENTER);
       
-      VBox vbox= new VBox(vbox2,vbox3, radioVBoxWt,playVBox, gridpane, vbox1, vbox4);
+      VBox vbox= new VBox(vbox2,vbox3, radioVBoxWt,playVBox, gridpane, vbox1, vbox4, matchesLabel);
       
       //vbox.setPadding(new Insets(10));
       Scene scene = new Scene(vbox, 1500,900);      
@@ -149,21 +151,24 @@ public class MemoryGameResponsive extends Application
       
       buttons = new Button [size][size];
       iViews1 = new ImageView[size][size]; 
-      
       iViews2 = new ImageView[size][size];
       
-      int x=0;
+      int arraySize = ((size*size)/2);
+      Image[] imageArray = new Image[arraySize];
+      for(int i=0; i<arraySize; i++){
+         imageArray[i] = new Image("file:"+i+".jpg");
+      }
+      
       for(int r=0;r<size;r++){
          for(int c=0; c<size; c++){
-            x++;
             iViews1[r][c]= new ImageView(new Image("file:fruitbasket.jpg"));
             iViews1[r][c].setFitWidth(100); 
             iViews1[r][c].setFitHeight(100);
             
-            iViews2[r][c]= new ImageView(new Image("file:"+x+".jpg"));
+            int index = mg.getSecretBoard(r,c);
+            iViews2[r][c] = new ImageView(imageArray[index]);
             iViews2[r][c].setFitWidth(100); 
-            iViews2[r][c].setFitHeight(100);           
-            
+            iViews2[r][c].setFitHeight(100);             
          }
       }
                
@@ -232,7 +237,8 @@ public class MemoryGameResponsive extends Application
          if(!mg.isMatch()){
             
             keepTrack++;
-         
+            
+            //"flip" the cards back over
             buttons[card1Row][card1Col] = new Button("",iViews1[card1Row][card1Col]);
             buttons[card2Row][card2Col] = new Button("",iViews1[card2Row][card2Col]); 
             
@@ -243,13 +249,13 @@ public class MemoryGameResponsive extends Application
             gridpane.add(buttons[card2Row][card2Col],card2Col,card2Row);
             
             if(keepTrack%2 == 1){ //player 1
-               p1count++;
-               turnLabel.setText("Player 1, you have taken " + p1count + " turn(s). \nPlayer 2, it's your turn.");
+               player1.turnsPlusOne();
+               turnLabel.setText(player2.getName() + "'s turn");
             }//if
             
             else if(keepTrack%2 == 0){ //player 2
-               p2count++;
-               turnLabel.setText("Player 2, you have taken " + p2count + " turn(s). \nPlayer 1, it's your turn.");
+               player2.turnsPlusOne();
+               turnLabel.setText(player1.getName() + "'s turn");
             }//else if
             
             resultLabel.setText("Not a match.");
@@ -260,18 +266,26 @@ public class MemoryGameResponsive extends Application
             buttons[card1Row][card1Col].setOnAction(null);
             buttons[card2Row][card2Col].setOnAction(null);
             resultLabel.setText("That's a match.");
+            if (keepTrack%2==0){
+               player1.matchesPlusOne();
+               matchesLabel.setText(player1.getName() + " matches: " + player1.getMatches() + "\n" + player2.getName() + "matches: " + player2.getMatches());
+            }//nested if
+            else{
+               player2.matchesPlusOne();
+               matchesLabel.setText(player1.getName() + " matches: " + player1.getMatches() + "\n" + player2.getName() + "matches: " + player2.getMatches());
+            }//nested else
             
          }//else if
          
          if(mg.isWinner()){
          
-            if(p1count>p2count || p2count == 0){
-               resultLabel.setText("Player 2, you won!");
+            if(player1.getMatches()>player2.getMatches() || player2.getMatches() == 0){
+               resultLabel.setText(player1.getName() + ", you won!");
                
             }//if
             
             else{
-               resultLabel.setText("Player 1, you won!");
+               resultLabel.setText(player1.getName() + ", you won!");
                
             }//else
             turnLabel.setText("");
@@ -297,8 +311,9 @@ public class MemoryGameResponsive extends Application
          else if(radioButtons[2].isSelected()){
             size = 6;
          }
+         mg = new MemoryGame(size);
          makeAGrid();
-        mg = new MemoryGame(size);
+       
       
       }//radiobuttons handler
    } //memorygameradiobuttons
