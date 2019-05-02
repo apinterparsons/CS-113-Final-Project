@@ -1,3 +1,5 @@
+import java.util.Random;
+
 class MemoryGame implements Game{
    private int[][] board;
    private int[][] secretBoard;
@@ -15,12 +17,13 @@ class MemoryGame implements Game{
       board = new int[boardSize][boardSize];
       secretBoard = new int[boardSize][boardSize];
       
-      int[] symbols = new int[boardSize*boardSize];
       //make the symbols
+      int[] symbols = new int[boardSize*boardSize];
       for(int i = 0; i<(boardSize*boardSize); i++){
          symbols[i] = i/2;
          System.out.println(symbols[i]);
       }
+      shuffle(symbols);
       
       int i = 0;
       for (int r=0; r<boardSize; r++){
@@ -34,6 +37,18 @@ class MemoryGame implements Game{
       
       printPretty();  
    } 
+   
+   public void shuffle(int[] array){
+      int length = array.length;
+      Random rnd = new Random();
+      
+      for (int i =0; i<length; i++){
+         int randomIndex = i+rnd.nextInt(length-i);
+         int randomElement = array[randomIndex];
+         array[randomIndex] = array[i];
+         array[i] = randomElement;
+      }
+   }
    
    public void takeTurn(int [] choice){
       //if it's their first card
@@ -143,6 +158,10 @@ class MemoryGame implements Game{
    
    public int getBoardSize(){
       return(boardSize);
+   }
+   
+   public int getSecretBoard(int r, int c){
+      return(secretBoard[r][c]);
    }
    
 
