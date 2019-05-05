@@ -1,0 +1,115 @@
+.vbox2 {
+    -fx-font-size: 30px;
+    -fx-font-family: "Abril Fatface";
+	-fx-padding: 10;
+	-fx-alignment: center ;
+	
+}
+.vbox3 {
+    -fx-font-size: 20px;
+    -fx-font-family: "Abril Fatface";
+	-fx-text-color:#894343;
+	-fx-padding: 5px;
+	-fx-alignment: center;
+	
+	
+}
+.vbox{
+	-fx-background-color: #E9AB94;
+}
+
+.playVBox{
+	-fx-font-family: Helvetica ;
+	-fx-font-weight: bold;
+	-fx-alignment: center ;
+}
+
+
+.vboxPlayers{
+	-fx-alignment: center;
+	-fx-spacing: 2px;
+}
+
+.name1{
+	-fx-font-family: Helvetica ;
+	-fx-font-size: 14px;
+	-fx-font-weight: bold;
+	-fx-alignment: center ;
+	-fx-padding: 5px;
+	
+}
+.name2{
+	-fx-font-family: Helvetica ;
+	-fx-font-size: 14px;
+	-fx-font-weight: bold;
+	-fx-alignment: center ;
+	-fx-padding: 5px;
+}
+
+.radioVBoxWt{
+	-fx-padding: 5px;
+	-fx-font-size: 14px;
+	-fx-font-family: Helvetica ;
+	-fx-font-weight: bold;
+	-fx-alignment: center ;
+}
+
+.playVBox{
+	-fx-padding: 5px;
+	-fx-font-size: 14px;
+	-fx-font-family: Helvetica ;
+	-fx-font-weight: bold;	
+}
+
+.vbox1{
+	-fx-alignment: center ;
+    -fx-font-size: 14px;
+	-fx-font-family: Helvetica ;
+	-fx-font-weight: bold;
+	-fx-padding: 5px;
+
+}
+.vbox4{
+	-fx-alignment: center ;
+}
+/* check button */ 
+.checkButton{
+	
+   	-fx-font-size: 14px;
+	-fx-font-family: Helvetica ;
+	-fx-font-weight: bold; 
+	-fx-border-color: black;
+	-fx-background-color: #ce9a69;
+	-fx-background-radius: 3,2,2,2;
+	-fx-padding: 12 30 12 30;
+	-fx-text-fill: white;
+}
+.checkButton:hover {
+    -fx-background-color: #ffe8ba;
+	-fx-border-color: white;
+	
+	-fx-text-fill: black;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
