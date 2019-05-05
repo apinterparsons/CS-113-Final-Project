@@ -4,8 +4,10 @@ import javafx.scene.Scene;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.paint.Color; 
+import javafx.scene.layout.Border;
 import javafx.scene.layout.*;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
 import javafx.scene.text.Font;
 import javafx.scene.image.Image;
@@ -30,12 +32,30 @@ public class MemoryGameResponsive extends Application
    Image ImageView;
    ImageView [][] iViews1; 
    ImageView [][] iViews2; 
+   
    Label headingLabel;
    Label descriptionLabel;
    Label resultLabel;
    Label turnLabel;
    Label matchesLabel;
+   Label p1Label;
+   Label p2Label;
+   
+   TextField p2Field;
+   TextField p1Field;
+  
+   HBox name1;
+   HBox name2;
+   
+   String p1;
+   String p2;
+   
+   VBox vbox;
+   VBox vboxPlayers;
+   VBox radioVBoxWt;
+   VBox playVBox;
    Button checkButton;
+   
    private Player player1;
    private Player player2;
    private MemoryGame mg; 
@@ -45,15 +65,16 @@ public class MemoryGameResponsive extends Application
    int card1Col;
    int card2Col;
    int size=0;
-   
    int keepTrack = 0;
    
-   private  ToggleGroup radioGroup; 
 
+   
+   private  ToggleGroup radioGroup; 
    private RadioButton [] radioButtons = new RadioButton[3]; 
    private RadioButton smallBoard;
    private RadioButton medBoard;
    private RadioButton largeBoard;
+
 
       
    public static void main(String[] args)
@@ -65,35 +86,24 @@ public class MemoryGameResponsive extends Application
    @Override
    public void start(Stage stage)
    {  
-   /*  
-      mg = new MemoryGame();
-      mg.setUp();
-      makeAGrid();
-    */      
       resultLabel= makeLabel("");
       turnLabel = makeLabel("");
       matchesLabel = makeLabel("");
-      
-     
       headingLabel= makeLabel("The Memory Game");
       VBox vbox2 = new VBox(headingLabel);
       descriptionLabel=makeLabel("The player to find the most matching pairs wins!");
       VBox vbox3 = new VBox(descriptionLabel);
-      VBox vbox1 = new VBox(resultLabel, turnLabel);
+      VBox vbox1 = new VBox(resultLabel, turnLabel, matchesLabel);
       checkButton= new Button("Check");   
       checkButton.setOnAction(new checkButtonHandler());
-   
       VBox vbox4 = new VBox(checkButton);
        
       radioButtons[0] = new RadioButton("2 x 2 Board Size");
       radioButtons[1] = new RadioButton("4 x 4 Board Size");
       radioButtons[2] = new RadioButton("6 x 6 Board Size");
-      
-     // Select a radiobutton to start control.
+   
       radioButtons[0].setSelected(true);
       
-      // Add the RadioButton controls to a ToggleGroup.
-      //ToggleGroup 
       radioGroup = new ToggleGroup();
       for (int i=0;i<3;i++)
          radioButtons[i].setToggleGroup(radioGroup);
@@ -102,40 +112,61 @@ public class MemoryGameResponsive extends Application
       Button convertButton = new Button("Play");
       convertButton.setOnAction(new MemoryGameRadioButtons());
    
-      VBox radioVBoxWt = new VBox(radioButtons[0], radioButtons[1],radioButtons[2]);
+      radioVBoxWt = new VBox(radioButtons[0], radioButtons[1],radioButtons[2]);
       
       RadioButton selectedRadioButton = (RadioButton) radioGroup.getSelectedToggle();
-      VBox playVBox = new VBox(convertButton);
+      playVBox = new VBox(convertButton);
       
-      player1 = new Player("Isabelle");
-      player2 = new Player("Dude");
+      p1Label= makeLabel("Player 1");  
+      p2Label = makeLabel("Player 2");
+      
+      p1Field= new TextField();  
+      p2Field=new TextField();
+
    
-      vbox1.setAlignment(Pos.CENTER);
-      vbox2.setAlignment(Pos.CENTER);
-      vbox3.setAlignment(Pos.CENTER);
-      vbox4.setAlignment(Pos.CENTER);
-      radioVBoxWt.setAlignment(Pos.CENTER);
-      playVBox.setAlignment(Pos.CENTER);
+      HBox name1 = new HBox(10, p1Label, p1Field);
+      HBox name2 = new HBox( 10, p2Label, p2Field);
       
-      VBox vbox= new VBox(vbox2,vbox3, radioVBoxWt,playVBox, gridpane, vbox1, vbox4, matchesLabel);
+      VBox vboxPlayers= new VBox(name1, name2);
+          
+      player1 = new Player(p1);
+      player2 = new Player(p2);
       
-      //vbox.setPadding(new Insets(10));
-      Scene scene = new Scene(vbox, 1500,900);      
-      // Set the stage title.
+     // Button nameButton= new Button ("Submit");
+      //createButton.setOnAction(new nameButtonHandler());
+       
+      
+      vbox= new VBox(vbox2,vbox3,vboxPlayers,radioVBoxWt,playVBox, gridpane, vbox1, vbox4);
+     
+      Scene scene = new Scene(vbox, 1200,850);      
+      
       stage.setTitle("Memory Game ");
-      
-    
-      // Show the window.
-      //scene.getStylesheets().add("css1.css");
    
+   
+     
+      // add CSS 
+      vbox.getStyleClass().add("vbox");
+      scene.getStylesheets().add("css.css");
+      vbox2.getStyleClass().add("vbox2");
+      vbox3.getStyleClass().add("vbox3");
+      playVBox.getStyleClass().add("playVBox");
+      name1.getStyleClass().add("name1");
+      name2.getStyleClass().add("name2");
+      vboxPlayers.getStyleClass().add("vboxPlayers");
+      playVBox.getStyleClass().add("playVBox");
+      radioVBoxWt.getStyleClass().add("radioVBoxWt");
+      vbox1.getStyleClass().add("vbox1");
+      vbox4.getStyleClass().add("vbox4");
+      checkButton.getStyleClass().add("checkButton");
+
       stage.setScene(scene);   
       stage.show();
    }
    
+   
    Label makeLabel(String s){
       Label label= new Label(s);
-      label.setFont(new Font("Helvetica", 20));
-      label.setAlignment(Pos.CENTER);
+      //label.setAlignment(Pos.CENTER);
       return(label); 
    }
       
@@ -162,13 +193,13 @@ public class MemoryGameResponsive extends Application
       for(int r=0;r<size;r++){
          for(int c=0; c<size; c++){
             iViews1[r][c]= new ImageView(new Image("file:fruitbasket.jpg"));
-            iViews1[r][c].setFitWidth(100); 
-            iViews1[r][c].setFitHeight(100);
+            iViews1[r][c].setFitWidth(70); 
+            iViews1[r][c].setFitHeight(70);
             
             int index = mg.getSecretBoard(r,c);
             iViews2[r][c] = new ImageView(imageArray[index]);
-            iViews2[r][c].setFitWidth(100); 
-            iViews2[r][c].setFitHeight(100);             
+            iViews2[r][c].setFitWidth(70); 
+            iViews2[r][c].setFitHeight(70);             
          }
       }
                
@@ -284,10 +315,13 @@ public class MemoryGameResponsive extends Application
                
             }//if
             
+            else if (player1.getMatches()<player2.getMatches() || player1.getMatches() == 0){
+               resultLabel.setText(player2.getName() + ", you won!");
+            }
             else{
-               resultLabel.setText(player1.getName() + ", you won!");
-               
-            }//else
+               resultLabel.setText("You ties.");
+            }
+            //else
             turnLabel.setText("");
          }//if
          
@@ -299,6 +333,9 @@ public class MemoryGameResponsive extends Application
    {
       @Override
       public void handle(ActionEvent event){
+      
+      player1.setName(p1Field.getText());
+      player2.setName(p2Field.getText());
          
          if(radioButtons[0].isSelected()){
             size = 2;
@@ -311,6 +348,7 @@ public class MemoryGameResponsive extends Application
          else if(radioButtons[2].isSelected()){
             size = 6;
          }
+         vbox.getChildren().removeAll(radioVBoxWt, playVBox);
          mg = new MemoryGame(size);
          makeAGrid();
        
